@@ -1,0 +1,24 @@
+{
+  "presets": [
+    [
+      "env",
+      {
+        "targets": {
+          "browsers": [
+            "last 2 versions",
+            "android >= 4.4"
+          ]
+        },
+        "modules": false,
+        "loose": true,
+        "useBuiltIns": true
+      }
+    ],
+    "es2015",
+    "stage-0",
+    "react"
+  ],
+  "plugins": [
+    "react-hot-loader/babel"
+  ]
+}
