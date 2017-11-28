@@ -1,69 +1,56 @@
-const webpack = require("webpack")
-const path = require("path")
+var path = require('path');
 const HtmlWebpackPlugin = require("html-webpack-plugin")
-const HotWebpackPlugin = require("html-webpack-plugin")
 
 module.exports = {
-  entry: "./src/index.js",
-  output: {
-    path: path.resolve("dist"),
-    filename: "js/[name].js",
-  },
-  module: {
-    rules: [
-      {
-        test: /\.jsx?$/,
-        include: [path.resolve("src")],
-        loader: "babel-loader",
-      },
-      {
-        test: /\.css$/,
-        use:[
-          {
-            loader: "style-loader"
-          },
-          {
-            loader: "css-loader"
-          }
-        ]
-      },
-      {
-        test: /\.(png|jpg|gif)$/,
-        use: [
-          {
-            loader: "file-loader",
-            options: { name: "images/[name].[ext]" },
-          },
-        ],
-      },
-      {
-        test: /\.(eot|ttf|svg|woff|woff2)$/,
-        use: [
-          {
-            loader: "file-loader",
-            options: { name: "fonts/[name].[ext]" },
-          },
-        ],
-      },
+    entry: './src/index.js',
+    output: {
+        path: path.join(__dirname, 'dist'),
+        filename: 'bundle.js',
+    },
+    plugins: [
+        new HtmlWebpackPlugin({
+            filename: 'index.html',
+            template: "./src/index.html",
+            inject: true
+        }),
     ],
-  },
-  devServer: {
-    contentBase: path.resolve("dist"),
-    hot: true,
-    publicPath: "/",
-    historyApiFallback: true,
-    disableHostCheck: true,
-    compress: true,
-    stats: { colors: true },
-    host: "0.0.0.0",
-    port: 3000
-  },
-  plugins: [
-    new webpack.HotModuleReplacementPlugin(),
-    new HtmlWebpackPlugin({
-      filename: "index.html",
-      template: "src/index.html",
-      inject: true
-    })
-  ]
-}
+    devServer: {
+        contentBase: path.join(__dirname, 'dist'),
+        inline: true,
+        historyApiFallback: true,
+        host: "localhost",
+        port: 3000,
+        proxy: {
+            "/": "http://192.168.0.11:8080"
+        }
+    },
+    module: {
+        loaders: [
+            {
+                test: /\.css$/,
+                loader: 'style-loader!css-loader'
+            },
+            {
+                test: /\.(jsx|js)$/,
+                exclude: /node_modules/,
+                loader: 'babel-loader',
+            },
+            {
+                test: /\.(png|jpg)$/,
+                loader: 'url-loader?limit=8192'
+            },
+            {
+                test: /\.less$/,
+                loader: 'style-loader!css-loader!less-loader'
+            },
+            {
+                test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+                loader: "url-loader?limit=10000&mimetype=application/font-woff"
+            },
+            {
+                test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+                loader: "file-loader"
+            }
+        ]
+    }
+};
